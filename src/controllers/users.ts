@@ -1,25 +1,23 @@
 import express, { Request, Response } from 'express';
-import validate from '../validators';
+import { Rules, validate, ValidateResult } from '../validators';
 
 const users = express.Router();
 
 const get = (request: Request, response: Response) => {
-    const rules = {
-        email: ['required'],
-        password: ['required'],
+    const rules: Rules = {
+        email: ['required', 'min:4'],
+        password: ['required', 'max:5'],
     };
     const data = {
-        email: 'data',
+        email: 'dat',
         password: 'sd',
     };
     validate(data, rules).then(
         () => {
-            console.log('valid');
-            response.send('read');
+            response.json({});
         },
-        () => {
-            console.log('non-valid');
-            response.send('read');
+        (result: ValidateResult) => {
+            response.status(400).json(result);
         }
     );
 };
