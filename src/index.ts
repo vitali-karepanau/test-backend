@@ -1,33 +1,35 @@
 import dotenv from 'dotenv';
-import express from 'express';
-import mongoose from 'mongoose';
-import users from './controllers/users';
-// import UserSchema, { User } from './models/user';
+import { Express, NextFunction, Request, Response } from 'express';
+import issues from './controllers/issues';
+import elasticsearch from 'elasticsearch';
+// import cors from 'cors';
+
+const express = require('express');
+const cors = require('cors');
 
 // load environment
 dotenv.config();
 
-// connect mongoose
-mongoose.connect(
-    process.env.MONGO_CONNECT_URL,
-    {
-        useNewUrlParser: true,
-    }
-).then(
-    () => {
-        console.log('MongoDB connected successfuly');
-    },
-    err => {
-        console.error('MongoDB wasn\'t connected');
-        console.error(err);
-    }
-);
+// elasticsearch connect
+const esClient = new elasticsearch.Client({
+    host: process.env.ES_HOST,
+    log: 'error',
+});
 
 // prepare app
-const app = express();
+const app: Express = express();
+
+// middleware
+app.use(cors());
+
+app.use((request: Request, response: Response, next: NextFunction) => {
+    request.esClient = esClient;
+    next();
+});
+
 
 // connect controllers
-app.use('/users', users);
+app.use('/issues', issues);
 
 // starting server
 app.listen(process.env.SERVER_PORT, () => {

@@ -6,8 +6,7 @@
     "jsRules": {},
     "rules": {
         "interface-name": [
-            true,
-            "never-prefix"
+            false
         ],
         "no-any": true,
         "no-empty-interface": true,
@@ -30,7 +29,6 @@
         "no-submodule-imports": false,
         "object-literal-sort-keys": false,
         "no-bitwise": false,
-        "jsx-no-lambda": false,
         "align": [
             true,
             "parameters",
